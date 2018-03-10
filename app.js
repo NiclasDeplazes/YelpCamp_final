@@ -75,6 +75,6 @@ app.use("/campgrounds/:id/comments", commentRoutes);
 // });
 
 //heroku
-app.listen((process.env.PORT, process.env.IP, function(){
+app.listen(process.env.PORT, process.env.IP, function(){
 	console.log("YelpCamp Server started on port 3000");
 });
