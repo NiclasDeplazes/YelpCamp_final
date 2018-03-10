@@ -20,6 +20,8 @@ var commentRoutes    = require("./routes/comments"),
 // connecting to db (mongod has to run in local environment)
 mongoose.connect(process.env.DATABASEURL);
 
+
+
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 // __dirname is the path of the app.js
@@ -67,6 +69,6 @@ app.use("/campgrounds/:id/comments", commentRoutes);
 
 
 // starting server (local or horoku)
-app.listen(3000 || process.env.PORT, process.env.IP, function(){
-	console.log("YelpCamp Server started on port 3000");
+app.listen(process.env.PORT, process.env.IP, function(){
+	console.log("YelpCamp Server started");
 });
