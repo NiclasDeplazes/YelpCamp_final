@@ -17,13 +17,8 @@ var commentRoutes    = require("./routes/comments"),
 	campgroundRoutes = require("./routes/campgrounds"),
 	indexRoutes       = require("./routes/index");
 
-// connecting to db (mongod has to run)
-
-//local
-//mongoose.connect("mongodb://localhost/yelp_camp_final");
-//mlab
-mongoose.connect("mongodb://nic:pQUWNHm8yzfekoM6geB7Ydb84tn67XvpVWq6ZuS48tRjPE4ESUfMY@ds111319.mlab.com:11319/yelpcamp_niclasdeplazes");
-
+// connecting to db (mongod has to run in local environment)
+mongoose.connect(process.env.DATABASEURL);
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
@@ -69,12 +64,9 @@ app.use("/", indexRoutes);
 app.use("/campgrounds", campgroundRoutes);
 app.use("/campgrounds/:id/comments", commentRoutes);
 
-//local server
-// app.listen(3000, function(){
-// 	console.log("YelpCamp Server started on port 3000");
-// });
 
-//heroku
-app.listen(process.env.PORT, process.env.IP, function(){
+
+// starting server (local or horoku)
+app.listen(3000 || process.env.PORT, process.env.IP, function(){
 	console.log("YelpCamp Server started on port 3000");
 });
