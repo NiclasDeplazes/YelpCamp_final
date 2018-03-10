@@ -18,6 +18,7 @@ var commentRoutes    = require("./routes/comments"),
 	indexRoutes       = require("./routes/index");
 
 // connecting to db (mongod has to run in local environment)
+// adding a local variable (local: export VARIABLENAME=...  , heroku: heroku config:set VARIABLENAME=... )
 mongoose.connect(process.env.DATABASEURL);
 
 
@@ -68,7 +69,7 @@ app.use("/campgrounds/:id/comments", commentRoutes);
 
 
 
-// starting server (local or horoku)
+// starting server (local on port 3000 or horoku)
 app.listen(process.env.PORT, process.env.IP, function(){
 	console.log("YelpCamp Server started");
 });
