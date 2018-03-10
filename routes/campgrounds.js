@@ -56,19 +56,22 @@ router.post("/", middleware.isLoggedIn, function(req, res){
   	  	var lng = data.results[0].geometry.location.lng;
   	  	var location = data.results[0].formatted_address;
   	  	var newCampground = {name: name, image: image, description: desc, price: price, author: author, location: location, lat: lat, lng: lng};
+  	  	// Create a new campground and save to DB
+  	    Campground.create(newCampground, function(err, newlyCreated){
+  	    	if(err){
+	  	        req.flash("error", "Campground couldn't be created try again later");
+				res.redirect("/campgrounds");
+	  	    } else {
+	  	        req.flash("success", "Campground successfuly created");
+				// redirect back to campgrounds page
+				res.redirect("/campgrounds");
+	  	    }
+  	    });
+  	    
+  	  } else {
+	  	req.flash("error", "Your added location isn't valid");
+		res.redirect("/campgrounds/new");
 	  }
-  	  
-  	  // Create a new campground and save to DB
-  	  Campground.create(newCampground, function(err, newlyCreated){
-  	      if(err){
-  	        req.flash("error", "Campground couldn't be created try again later");
-			res.redirect("/campgrounds");
-  	      } else {
-  	        req.flash("success", "Campground successfuly created");
-			// redirect back to campgrounds page
-			res.redirect("/campgrounds");
-  	      }
-  	  });
   	});
 });
 
@@ -105,6 +108,7 @@ router.put("/:id", middleware.checkCampgroundOwnership, function(req, res){
 	var image = req.body.image;
 	var desc = req.body.description;
 	var price = req.body.price;
+	var campgroundId = req.params.id;
 
 	geocoder.geocode(req.body.location, function (err, data) {
 	  if (data && data.results && data.results.length) {
@@ -112,20 +116,23 @@ router.put("/:id", middleware.checkCampgroundOwnership, function(req, res){
   	  	var lng = data.results[0].geometry.location.lng;
   	  	var location = data.results[0].formatted_address;
   	  	var newData = {name: name, image: image, description: desc, price: price, location: location, lat: lat, lng: lng};
+
+  	  	
+	  	// find and update the correct campground
+	  	Campground.findByIdAndUpdate(campgroundId, {$set: newData}, function(err, updatedCampground){
+	  	    if(err){
+	  	        req.flash("error", "Campground couldn't be updated. Try again later.");
+	  	        res.redirect("back");
+	  	    } else {
+	  	        req.flash("success", "Campground successfully updated");
+	  	        res.redirect("/campgrounds/" + campgroundId);
+	  	    }
+	  	});
+
+	  } else {
+	  	req.flash("error", "Your added location isn't valid");
+		res.redirect("/campgrounds/"+campgroundId+"/edit");
 	  }
-  	  
-  	  
-  	  var campgroundId = req.params.id;
-  	  // find and update the correct campground
-  	  Campground.findByIdAndUpdate(campgroundId, {$set: newData}, function(err, updatedCampground){
-  	      if(err){
-  	          req.flash("error", "Campground couldn't be updated. Try again later.");
-  	          res.redirect("back");
-  	      } else {
-  	          req.flash("success", "Campground successfully updated");
-  	          res.redirect("/campgrounds/" + campgroundId);
-  	      }
-  	  });
   	});
 });
 
